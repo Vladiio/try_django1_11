@@ -4,7 +4,16 @@
 <head>
 </head>
 <body>
-<h1>Hello world</h1>
+{% if html_var %}
+    <h1>Hello world {{ num }}</h1>
+{% endif %}
+
+{% for item in some_list %}
+    {% if item|divisibleby:"2" %}
+        Even number
+    {% endif %}
+    {{ item }}</br>
+{% endfor %}
 </body>
 </html>
  
