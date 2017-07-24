@@ -2,18 +2,16 @@
 <html lang=en>
 
 <head>
+    <title>{% block head_title %}MuyPicky.com{% endblock %}</title>
+    {% include "snippets/css.html" %}
 </head>
-<body>
-{% if html_var %}
-    <h1>Hello world {{ num }}</h1>
-{% endif %}
 
-{% for item in some_list %}
-    {% if item|divisibleby:"2" %}
-        Even number
-    {% endif %}
-    {{ item }}</br>
-{% endfor %}
+<body>
+    {% include "snippets/nav.html" %}
+    <div class="container">
+        {% block content %} Base {% endblock %}
+    </div>
+    {% include "snippets/js.html" %}
 </body>
+
 </html>
- 

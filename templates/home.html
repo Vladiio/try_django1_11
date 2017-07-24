@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head_title %}Welcome || {{ block.super }} {% endblock %}
+
+{% block content %}
+<h3>Lorem text</h3>
+<p>
+
+{{ num }}
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur possimus placeat ea repellat delectus provident, est nulla, in praesentium blanditiis quae vel quo quam nemo suscipit omnis, sit alias, minima!
+
+</p>
+<h3>Random numbers</h3>
+{% for item in some_list %}
+    <h6>{% cycle 'row1' 'row2' %}</h6>
+    {% if item|divisibleby:"2" %}
+        Even number
+    {% endif %}
+    {{ item }}</br>
+{% endfor %}
+{% endblock %}
