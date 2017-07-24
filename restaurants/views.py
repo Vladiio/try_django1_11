@@ -2,6 +2,7 @@ import random
 
 from django.shortcuts import render
 from django.views import View
+from django.views.generic import TemplateView
 
 
 # function based view
@@ -25,12 +26,18 @@ def contact(request):
 
 
 # class-based views
-class ContactView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, "contact.html", {})
+class HomeView(TemplateView):
+    template_name = "home.html"
 
-    # def post(self, request, *args, **kwargs):
-    #     return render(request, "contact.html", {})
-
-    # def put(self, request, *args, **kwargs):
-    #     return render(request, "contact.html", {})
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        num = random.randint(0, 100000000)
+        some_list = [num, random.randint(0, 100000000)]
+        data = {
+            'html_var': True,
+            'num': num,
+            'some_list': some_list
+        }
+        context.update(data)
+        print(context)
+        return context
