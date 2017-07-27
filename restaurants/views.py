@@ -10,6 +10,21 @@ from .models import RestaurantLocation
 from .forms import RestaurantCreateForm, RestaurantLocationCreateForm
 
 
+def restaurant_create_view(request):
+    form = RestaurantLocationCreateForm(request.POST or None)
+    errors = None
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('/restaurants/')
+    if form.errors:
+        errors = form.errors
+    context = {
+        'form': form,
+        'errors': errors,
+    }
+    return render(request, "restaurants/form.html", context)
+
+
 def restaurant_list_view(request):
     template_name = "restaurants/restaurants_list.html"
     queryset = RestaurantLocation.objects.all()
