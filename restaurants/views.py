@@ -1,5 +1,7 @@
 import random
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -10,6 +12,7 @@ from .models import RestaurantLocation
 from .forms import RestaurantCreateForm, RestaurantLocationCreateForm
 
 
+@login_required
 def restaurant_create_view(request):
     form = RestaurantLocationCreateForm(request.POST or None)
     errors = None
@@ -54,9 +57,21 @@ class RestaurantListView(ListView):
 
 class RestaurantDetailView(DetailView):
     queryset = RestaurantLocation.objects.all()
+    template_name = "form.html"
 
 
-class RestaurantCreateView(CreateView):
+class RestaurantCreateView(LoginRequiredMixin, CreateView):
     form_class = RestaurantLocationCreateForm
-    template_name = "restaurants/form.html"
-    success_url = "/restaurants/"
+    template_name = "form.html"
+    # success_url = "/restaurants/"
+    #login_url = "/login/"
+
+    def form_valid(self, form):
+            instance = form.save(commit=False)
+            instance.owner = self.request.user
+            return super().form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['title'] = 'Add Restaurant'
+        return context
