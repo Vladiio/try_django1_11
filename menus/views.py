@@ -14,7 +14,7 @@ class ItemListView(LoginRequiredMixin, ListView):
 
 
 class ItemDetailView(DetailView):
-
+    
     def get_queryset(self):
         return Item.objects.filter(user=self.request.user)
 
