@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 
 from .models import Item
 from .forms import ItemForm
+from restaurants.forms import RestaurantLocationCreateForm
 
 
 class ItemListView(LoginRequiredMixin, ListView):
@@ -20,7 +21,7 @@ class ItemDetailView(DetailView):
 
 class ItemUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ItemForm
-    template_name = "form.html"
+    template_name = "menus/detail_update.html"
 
     def get_queryset(self):
         return Item.objects.filter(user=self.request.user)
@@ -33,7 +34,6 @@ class ItemUpdateView(LoginRequiredMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
-        print(kwargs)
         return kwargs
 
 
