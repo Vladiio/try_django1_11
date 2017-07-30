@@ -3,7 +3,8 @@
 {% block head_title %}{{object.username}} || {{ block.super }} {% endblock %}
 
 {% block content %}
-<h1>{{ object.name }} </h1>
+<h1>{{ object.username }} </h1>
+<p>{% include 'profiles/snippet/follow_form.html' with username=object.username is_following=is_following %}</p>
 <form method="GET" action="." class="form">
     <input type="text" placeholder="Search..." name='q' value='{{ request.GET.q}}'>
     <button type="submit" class="btn btn-defalut">Search</button>
@@ -17,7 +18,7 @@
             <div class="thumbnail">
                 <h4>{{rest.title}}</h4>
                 <p><a href="{{request.path}}?q={{rest.location}}">{{ rest.location }}</a>|
-                <a href="{{request.path}}?q={{rest.category}}">{ rest.category }</a></p>
+                <a href="{{request.path}}?q={{rest.category}}">{{ rest.category }}</a></p>
                     <p>
                     <ul>
                         {% for item in rest.item_set.all %}

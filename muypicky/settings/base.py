@@ -27,6 +27,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+with open('my.pass') as file:
+    my_pass = file.readline()
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'vladpochta5@gmail.com'
+EMAIL_HOST_PASSWORD = my_pass
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'test@mail.ru'
+
+ADMINS = (
+    ('Vlad', 'vladpochta5@gmail.com'),
+)
 
 # Application definition
 
@@ -125,3 +138,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'

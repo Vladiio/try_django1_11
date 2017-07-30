@@ -1,13 +1,53 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import Http404
-from django.views.generic import DetailView
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404
+from django.views.generic import DetailView, View, CreateView
+from django.core.urlresolvers import reverse
 
 from menus.models import Item
 from restaurants.models import RestaurantLocation
+from .models import Profile
+from .forms import RegisterForm
 
 
 User = get_user_model()
+
+def activate_user_view(request, code=None, *args, **kwargs):
+    if code:
+        qs = Profile.objects.filter(activation_key=code)
+        if qs.exists() and qs.count() == 1:
+            profile = qs.first()
+            if not profile.activated:
+                user_ = profile.user
+                user_.is_active = True
+                user_.save()
+                profile.activated = True
+                profile.activation_key = None
+                profile.save()
+    return redirect('/login/')
+
+class RegisterView(CreateView):
+    form_class = RegisterForm
+    template_name = 'registration/register.html'
+    success_url = '/'
+
+    def dispatch(self, *args, **kwargs):
+        # if self.request.user.is_authenticated():
+            # return redirect(reverse('logout'))
+        return super().dispatch(*args, **kwargs)
+
+
+class ProfileFollowToggle(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        username_to_toggle = request.POST.get('username')
+        profile_, is_following = Profile.objects.toggle_follow(
+                                    request.user,
+                                    username_to_toggle)
+        print(is_following)
+        kwargs = {'username': username_to_toggle}
+        return redirect(reverse('profiles:detail',
+                                kwargs=kwargs))
 
 
 class ProfileDetailView(DetailView):
@@ -24,6 +64,12 @@ class ProfileDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         user = context['user']
+        
+        is_following = False
+        if user.profile in self.request.user.is_following.all():
+            is_following = True
+        context['is_following'] = is_following
+
         query = self.request.GET.get('q')
         items_exists = Item.objects.filter(user=user).exists()
         qs = RestaurantLocation.objects.filter(owner=user).search(query)
